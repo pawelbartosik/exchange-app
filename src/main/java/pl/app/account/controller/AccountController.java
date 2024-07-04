@@ -1,5 +1,6 @@
 package pl.app.account.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -42,7 +43,7 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<AccountDto> createAccount(@RequestBody CreateAccountCommand command) {
+    public ResponseEntity<AccountDto> createAccount(@RequestBody @Valid CreateAccountCommand command) {
         log.info("Creating account: {}", command);
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.createAccount(command));
     }

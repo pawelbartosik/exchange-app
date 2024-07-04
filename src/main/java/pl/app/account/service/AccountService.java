@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.app.account.exception.AccountAlreadyExistException;
 import pl.app.account.exception.AccountConflictException;
 import pl.app.account.exception.AccountNotEmptyException;
 import pl.app.account.exception.AccountNotFoundException;
@@ -32,9 +33,18 @@ public class AccountService {
                 .orElseThrow(AccountNotFoundException::new);
     }
 
+    @Transactional
     public AccountDto createAccount(CreateAccountCommand command) {
-        Account account = new Account(command.pesel(), command.name(), command.surname(), command.balancePLN());
-        return AccountDto.fromAccount(accountRepository.save(account));
+        if (accountRepository.restoreDeletedAccount(command.pesel(), command.name(), command.surname(), command.balancePLN()) > 0) {
+            return getAccount(command.pesel());
+        }
+
+        try {
+            return AccountDto.fromAccount(accountRepository
+                    .save(new Account(command.pesel(), command.name(), command.surname(), command.balancePLN())));
+        } catch (Exception e) {
+            throw new AccountAlreadyExistException();
+        }
     }
 
     public AccountDto updateAccountData(String pesel, UpdateAccountCommand command) {
