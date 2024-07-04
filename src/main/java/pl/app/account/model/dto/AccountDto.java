@@ -4,9 +4,10 @@ import pl.app.account.model.Account;
 
 import java.math.BigDecimal;
 
-public record AccountDto(String pesel, String name, String surname, BigDecimal balancePLN, BigDecimal balanceUSD) {
+public record AccountDto(Integer id, String pesel, String name, String surname, BigDecimal balancePLN,
+                         BigDecimal balanceUSD) {
 
     public static AccountDto fromAccount(Account account) {
-        return new AccountDto(account.getPesel(), account.getName(), account.getSurname(), account.getBalancePLN(), account.getBalanceUSD());
+        return new AccountDto(account.getId(), account.getPesel(), account.getName(), account.getSurname(), account.getBalancePLN(), account.getBalanceUSD());
     }
 }

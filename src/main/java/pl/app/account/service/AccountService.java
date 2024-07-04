@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import pl.app.account.exception.AccountConflictException;
+import pl.app.account.exception.AccountNotEmptyException;
 import pl.app.account.exception.AccountNotFoundException;
 import pl.app.account.model.Account;
 import pl.app.account.model.command.CreateAccountCommand;
@@ -24,23 +27,37 @@ public class AccountService {
     }
 
     public AccountDto getAccount(String pesel) {
-        return accountRepository.findById(pesel)
+        return accountRepository.findByPesel(pesel)
                 .map(AccountDto::fromAccount)
                 .orElseThrow(AccountNotFoundException::new);
     }
 
     public AccountDto createAccount(CreateAccountCommand command) {
-        Account account = new Account(command.pesel(), command.name(), command.surname(), command.balancePLN(), BigDecimal.ZERO);
+        Account account = new Account(command.pesel(), command.name(), command.surname(), command.balancePLN());
         return AccountDto.fromAccount(accountRepository.save(account));
     }
 
     public AccountDto updateAccountData(String pesel, UpdateAccountCommand command) {
-        //TODO one query or two queries
-        return null;
+        Account account = accountRepository.findByPesel(pesel)
+                .orElseThrow(AccountNotFoundException::new);
+        if (!account.getPesel().equals(command.pesel())) {
+            throw new AccountConflictException();
+        }
+
+        account.setName(command.name());
+        account.setSurname(command.surname());
+        return AccountDto.fromAccount(accountRepository.save(account));
     }
 
+    @Transactional
     public void deleteAccount(String pesel) {
-        // can't delete account with balance
-        // soft delete maybe?
+        Account account = accountRepository.findByPesel(pesel)
+                .orElseThrow(AccountNotFoundException::new);
+
+        if (account.getBalancePLN().add(account.getBalanceUSD()).compareTo(BigDecimal.ZERO) > 0) {
+            throw new AccountNotEmptyException();
+        }
+
+        accountRepository.deleteAccountByPesel(pesel);
     }
 }

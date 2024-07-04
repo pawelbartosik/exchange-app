@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.app.account.model.command.CreateAccountCommand;
@@ -41,13 +42,13 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<AccountDto> createAccount(CreateAccountCommand command) {
+    public ResponseEntity<AccountDto> createAccount(@RequestBody CreateAccountCommand command) {
         log.info("Creating account: {}", command);
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.createAccount(command));
     }
 
     @PutMapping("/{pesel}")
-    public ResponseEntity<AccountDto> updateAccountData(@PathVariable String pesel, UpdateAccountCommand command) {
+    public ResponseEntity<AccountDto> updateAccountData(@PathVariable String pesel, @RequestBody UpdateAccountCommand command) {
         log.info("Updating account with pesel: {}", pesel);
         return ResponseEntity.ok(accountService.updateAccountData(pesel, command));
     }
@@ -60,9 +61,9 @@ public class AccountController {
     }
 
     //    Exchange currency - USD to PLN and PLN to USD
-    @PutMapping("/{pesel}/exchange")
-    public ResponseEntity<AccountDto> exchangeCurrency(@PathVariable String pesel, ExchangeCurrencyCommand command) {
-        log.info("Exchanging currency for account with pesel: {}", pesel);
-        return ResponseEntity.ok(accountService.exchangeCurrency(pesel, amount, currency));
-    }
+//    @PutMapping("/{pesel}/exchange")
+//    public ResponseEntity<AccountDto> exchangeCurrency(@PathVariable String pesel, ExchangeCurrencyCommand command) {
+//        log.info("Exchanging currency for account with pesel: {}", pesel);
+//        return ResponseEntity.ok(accountService.exchangeCurrency(pesel, amount, currency));
+//    }
 }

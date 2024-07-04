@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="20240704-pawel-001" author="pawel">
+        <insert tableName="account">
+            <column name="pesel" value="85030712345"/>
+            <column name="name" value="Maria"/>
+            <column name="surname" value="Kowalska"/>
+            <column name="balancepln" valueNumeric="1000"/>
+            <column name="balanceusd" valueNumeric="0"/>
+        </insert>
+        <insert tableName="account">
+            <column name="pesel" value="92061567890"/>
+            <column name="name" value="Jan"/>
+            <column name="surname" value="Nowak"/>
+            <column name="balancepln" valueNumeric="2000"/>
+            <column name="balanceusd" valueNumeric="0"/>
+        </insert>
+        <insert tableName="account">
+            <column name="pesel" value="00123112345"/>
+            <column name="name" value="Magda"/>
+            <column name="surname" value="Sienkiewicz"/>
+            <column name="balancepln" valueNumeric="3000"/>
+            <column name="balanceusd" valueNumeric="0"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
