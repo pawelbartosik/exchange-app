@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.app.account.model.command.CreateAccountCommand;
+import pl.app.account.model.command.ExchangeCurrencyCommand;
 import pl.app.account.model.command.UpdateAccountCommand;
 import pl.app.account.model.dto.AccountDto;
 import pl.app.account.service.AccountService;
+import pl.app.currency.service.CurrencyService;
 
 @RestController
 @RequestMapping("/api/account")
@@ -28,6 +30,7 @@ import pl.app.account.service.AccountService;
 public class AccountController {
 
     private final AccountService accountService;
+    private final CurrencyService currencyService;
 
     //    CRUD
     @GetMapping
@@ -62,9 +65,16 @@ public class AccountController {
     }
 
     //    Exchange currency - USD to PLN and PLN to USD
-//    @PutMapping("/{pesel}/exchange")
-//    public ResponseEntity<AccountDto> exchangeCurrency(@PathVariable String pesel, ExchangeCurrencyCommand command) {
-//        log.info("Exchanging currency for account with pesel: {}", pesel);
-//        return ResponseEntity.ok(accountService.exchangeCurrency(pesel, amount, currency));
-//    }
+    @PutMapping("/{pesel}/exchange")
+    public ResponseEntity<AccountDto> exchangeCurrency(@PathVariable String pesel, @RequestBody @Valid ExchangeCurrencyCommand command) {
+        log.info("Exchanging currency for account with pesel: {}", pesel);
+
+        //if account not exist throw exception
+        //check balance
+        //get rate - currencyService.getRate()
+        //calculate amount or throw exception
+        //update account balance
+
+        return null;
+    }
 }
