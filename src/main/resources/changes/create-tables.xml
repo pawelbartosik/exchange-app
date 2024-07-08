@@ -11,8 +11,7 @@
                     primary key,
                 pesel   varchar(11) unique    not null,
                 name    varchar(255)          not null,
-                surname varchar(255)          not null,
-                deleted boolean default false not null
+                surname varchar(255)          not null
             );
         </sql>
     </changeSet>
@@ -28,37 +27,5 @@
                 FOREIGN KEY (pesel) REFERENCES account (pesel)
             );
         </sql>
-    </changeSet>
-    <changeSet id="20240707-pawel-001" author="pawel">
-        <sql>
-            CREATE VIEW ACCOUNT_SUBACCOUNT_VIEW AS
-            SELECT
-                a.id,
-                a.pesel,
-                a.name,
-                a.surname,
-                STRING_AGG(s.currency || ' ' || CAST(s.amount AS VARCHAR), '; ') AS subaccounts_info
-            FROM
-                account a
-                    LEFT JOIN
-                sub_account s ON a.pesel = s.pesel
-            GROUP BY
-                a.id, a.pesel, a.name, a.surname
-        </sql>
-<!--        <sql>-->
-<!--            create view EVENT_VIEW as-->
-<!--            (-->
-<!--            select e1_0.id,-->
-<!--                   e1_0.date,-->
-<!--                   e1_0.type,-->
-<!--                   e1_0.price_per_person,-->
-<!--                   e1_0.audience_capacity,-->
-<!--                   e1_0.description,-->
-<!--                   (select count(p1_0.id)-->
-<!--                    from participant p1_0-->
-<!--                             join event_participant e2_0 on p1_0.id = e2_0.participant_id-->
-<!--                    where e2_0.event_id = e1_0.id) as number_of_participants-->
-<!--            from event e1_0)-->
-<!--        </sql>-->
     </changeSet>
 </databaseChangeLog>

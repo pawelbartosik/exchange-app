@@ -57,32 +57,16 @@ public class AccountController {
         return ResponseEntity.ok(accountService.updateAccountData(pesel, command));
     }
 
-//    @DeleteMapping("/{pesel}")
-//    public ResponseEntity<Void> deleteAccount(@PathVariable String pesel) {
-//        log.info("Deleting account with pesel: {}", pesel);
-//        accountService.deleteAccount(pesel);
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("/{pesel}")
+    public ResponseEntity<Void> deleteAccount(@PathVariable String pesel) {
+        log.info("Deleting account with pesel: {}", pesel);
+        accountService.deleteAccount(pesel);
+        return ResponseEntity.noContent().build();
+    }
 
-    //    Exchange currency - USD to PLN and PLN to USD
     @PutMapping("/{pesel}/exchange")
     public ResponseEntity<AccountDto> exchangeCurrency(@PathVariable String pesel, @RequestBody @Valid ExchangeCurrencyCommand command) {
         log.info("Exchanging currency for account with pesel: {}", pesel);
-
-        //w EchangeCurrencyCommand zrobić waladacje z enuma
-
-        //all should be as one transaction, because we need to update account balance
-
-        //if account not exist throw exception
-        //check balance
-        //accountService.validateAccountForExchange(pesel, command);
-
-        //get rate - currencyService.getRate()
-        //everything should be inside this method
-
-        //calculate amount or throw exception
-        //update account balance
-
-        return null;
+        return ResponseEntity.ok(accountService.exchangeCurrency(pesel, command));
     }
 }

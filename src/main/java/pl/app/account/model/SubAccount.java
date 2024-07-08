@@ -13,8 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import pl.app.account.exception.SubAccountNotFoundException;
 import pl.app.account.model.enums.CurrencyCode;
 
 import java.math.BigDecimal;
@@ -25,8 +24,6 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(of = {"account", "currency"})
 @ToString(exclude = "account")
 @NoArgsConstructor
-@Where(clause = "deleted = false")
-@SQLDelete(sql = "UPDATE sub_account SET deleted = true WHERE id = ?")
 public class SubAccount {
 
     @Id
@@ -39,7 +36,6 @@ public class SubAccount {
     @Enumerated(EnumType.STRING)
     private CurrencyCode currency;
     private BigDecimal amount;
-    private boolean deleted;
 
     public SubAccount(Account account, CurrencyCode currency, BigDecimal amount) {
         this.account = account;
@@ -47,6 +43,14 @@ public class SubAccount {
         this.amount = amount;
 
         this.account.getSubAccounts().add(this);
+    }
+
+    public static SubAccount getSubAccount(Account account, CurrencyCode currency) {
+        return account.getSubAccounts()
+                .stream()
+                .filter(subAccount -> subAccount.getCurrency().equals(currency))
+                .findFirst()
+                .orElseThrow(SubAccountNotFoundException::new);
     }
 
 }
