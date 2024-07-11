@@ -2,8 +2,10 @@ package pl.app.currency.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import pl.app.account.model.enums.CurrencyCode;
+import pl.app.currency.exception.CurrencyConversionException;
 import pl.app.currency.model.CurrencyRateDetail;
 import pl.app.currency.model.CurrencyRateResponse;
 
@@ -18,14 +20,17 @@ public class CurrencyService {
     private final RestTemplate restTemplate;
 
     public CurrencyRateResponse getSingleRate(CurrencyCode currencyCode) {
-        if ("PLN".equalsIgnoreCase(String.valueOf(currencyCode))) {
-            CurrencyRateDetail currencyRateDetail = new CurrencyRateDetail("1", LocalDate.now().toString(), 1.0, 1.0);
-            return new CurrencyRateResponse("C", "złoty polski", "PLN", List.of(currencyRateDetail));
-        }
+        try {
+            if ("PLN".equalsIgnoreCase(String.valueOf(currencyCode))) {
+                CurrencyRateDetail currencyRateDetail = new CurrencyRateDetail("1", LocalDate.now().toString(), 1.0, 1.0);
+                return new CurrencyRateResponse("C", "złoty polski", "PLN", List.of(currencyRateDetail));
+            }
 
-        //try catch
-        String url = "http://api.nbp.pl/api/exchangerates/rates/c/" + currencyCode;
-        return restTemplate.getForObject(url, CurrencyRateResponse.class);
+            String url = "http://api.nbp.pl/api/exchangerates/rates/c/" + currencyCode;
+            return restTemplate.getForObject(url, CurrencyRateResponse.class);
+        } catch (RestClientException e) {
+            throw new CurrencyConversionException();
+        }
     }
 
     public BigDecimal exchangeCurrency(CurrencyCode from, CurrencyCode to, BigDecimal amount) {

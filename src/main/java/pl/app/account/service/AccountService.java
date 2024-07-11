@@ -18,7 +18,6 @@ import pl.app.account.model.command.UpdateAccountCommand;
 import pl.app.account.model.dto.AccountDto;
 import pl.app.account.model.enums.CurrencyCode;
 import pl.app.account.repository.AccountRepository;
-import pl.app.account.repository.SubAccountRepository;
 import pl.app.currency.service.CurrencyService;
 
 import java.math.BigDecimal;
@@ -28,13 +27,14 @@ import java.math.BigDecimal;
 public class AccountService {
 
     private final AccountRepository accountRepository;
-    private final SubAccountRepository subAccountRepository;
     private final CurrencyService currencyService;
 
+    @Transactional(readOnly = true)
     public Page<AccountDto> getAccounts(Pageable pageable) {
         return accountRepository.findAllWithSubAccounts(pageable).map(AccountDto::fromAccount);
     }
 
+    @Transactional(readOnly = true)
     public AccountDto getAccount(String pesel) {
         return accountRepository.findByPeselWithSubAccounts(pesel)
                 .map(AccountDto::fromAccount)
@@ -51,6 +51,7 @@ public class AccountService {
         }
     }
 
+    @Transactional
     public AccountDto updateAccountData(String pesel, UpdateAccountCommand command) {
         Account account = accountRepository.findByPeselWithSubAccounts(pesel)
                 .orElseThrow(AccountNotFoundException::new);

@@ -27,6 +27,11 @@
             <column name="amount" value="1000"/>
         </insert>
         <insert tableName="sub_account">
+            <column name="pesel" valueComputed="select a.pesel from account a where a.name = 'Maria'"/>
+            <column name="currency" value="USD"/>
+            <column name="amount" value="0"/>
+        </insert>
+        <insert tableName="sub_account">
             <column name="pesel" valueComputed="select a.pesel from account a where a.name = 'Jan'"/>
             <column name="currency" value="PLN"/>
             <column name="amount" value="2000"/>
@@ -40,6 +45,11 @@
             <column name="pesel" valueComputed="select a.pesel from account a where a.name = 'Magda'"/>
             <column name="currency" value="USD"/>
             <column name="amount" value="3000"/>
+        </insert>
+        <insert tableName="sub_account">
+            <column name="pesel" valueComputed="select a.pesel from account a where a.name = 'Magda'"/>
+            <column name="currency" value="PLN"/>
+            <column name="amount" value="0"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

@@ -21,7 +21,6 @@ import pl.app.account.model.command.ExchangeCurrencyCommand;
 import pl.app.account.model.command.UpdateAccountCommand;
 import pl.app.account.model.dto.AccountDto;
 import pl.app.account.service.AccountService;
-import pl.app.currency.service.CurrencyService;
 
 @RestController
 @RequestMapping("/api/account")
@@ -30,9 +29,7 @@ import pl.app.currency.service.CurrencyService;
 public class AccountController {
 
     private final AccountService accountService;
-    private final CurrencyService currencyService;
 
-    //    CRUD
     @GetMapping
     public ResponseEntity<Page<AccountDto>> getAccounts(@PageableDefault Pageable pageable) {
         log.info("Getting all accounts");
@@ -52,7 +49,7 @@ public class AccountController {
     }
 
     @PutMapping("/{pesel}")
-    public ResponseEntity<AccountDto> updateAccountData(@PathVariable String pesel, @RequestBody UpdateAccountCommand command) {
+    public ResponseEntity<AccountDto> updateAccountData(@PathVariable String pesel, @RequestBody @Valid UpdateAccountCommand command) {
         log.info("Updating account with pesel: {}", pesel);
         return ResponseEntity.ok(accountService.updateAccountData(pesel, command));
     }

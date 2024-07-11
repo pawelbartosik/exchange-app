@@ -1,13 +1,15 @@
 package pl.app.account.model.command;
 
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import pl.app.validation.annotation.ValidCurrency;
+import pl.app.validation.annotation.ValidPeselAge;
 
 import java.math.BigDecimal;
 
-public record ExchangeCurrencyCommand(@Pattern(regexp = "\\d{11}", message = "pesel must be valid") String pesel,
-                                      @NotEmpty(message = "currency from cannot be empty") String from,
-                                      @NotEmpty(message = "currency to cannot be empty") String to,
-                                      @DecimalMin(value = "0", inclusive = false, message = "amount must be greater than 0") BigDecimal amount) {
+public record ExchangeCurrencyCommand(@Pattern(regexp = "\\d{11}", message = "PESEL_MUST_BE_VALID")
+                                      @ValidPeselAge String pesel,
+                                      @ValidCurrency String from,
+                                      @ValidCurrency String to,
+                                      @DecimalMin(value = "0", inclusive = false, message = "AMOUNT_MUST_POSITIVE") BigDecimal amount) {
 }
