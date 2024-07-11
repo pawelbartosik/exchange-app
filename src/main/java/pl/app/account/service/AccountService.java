@@ -85,6 +85,10 @@ public class AccountService {
         Account account = accountRepository.findByPeselWithSubAccounts(pesel)
                 .orElseThrow(AccountNotFoundException::new);
 
+        if (!account.getPesel().equals(command.pesel())) {
+            throw new AccountConflictException();
+        }
+
         SubAccount from = SubAccount.getSubAccount(account, CurrencyCode.valueOf(command.from()));
         SubAccount to = SubAccount.getSubAccount(account, CurrencyCode.valueOf(command.to()));
 
